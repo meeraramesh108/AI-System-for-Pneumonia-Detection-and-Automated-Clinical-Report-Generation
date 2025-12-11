@@ -1,0 +1,158 @@
+AI System for Pneumonia Detection and Automated Clinical Report Generation
+
+This repository contains an end-to-end clinical AI system capable of diagnosing pneumonia from chest X-ray images, providing visual explainability using Grad-CAM, and generating structured clinical summaries using a large language model.
+The project integrates deep learning, medical image analysis, explainability techniques, and natural language generation, delivered through a FastAPI-based web interface.
+
+1. Project Overview
+
+This system performs the following tasks:
+
+Classifies chest X-ray images as either Normal or Pneumonia using a ResNet50 convolutional neural network.
+
+Applies Grad-CAM++ to generate interpretable heatmaps and highlight regions contributing to the decision.
+
+Generates a clinician-style radiology report using the BART large CNN summarization model.
+
+Provides a web-based interface where users can upload an X-ray image, view predictions, view heatmap overlays, and read an AI-generated clinical summary.
+
+2. Features
+2.1 Pneumonia Classification Model
+
+Transfer learning using ResNet50 with a custom classification head.
+
+Training and evaluation implemented entirely within a Jupyter Notebook.
+
+Data augmentation techniques:
+
+Random horizontal flip
+
+Random rotation
+
+Color jittering
+
+Class balancing using WeightedRandomSampler.
+
+Metrics computed during training:
+
+Loss
+
+Accuracy
+
+AUC (Area Under ROC Curve)
+
+2.2 Evaluation
+
+The notebook includes a complete evaluation pipeline:
+
+Confusion matrix
+
+ROC curve (saved as an image)
+
+AUC score
+
+Accuracy
+
+2.3 Explainability with Grad-CAM++
+
+Activation maps generated for each inference.
+
+Heatmaps overlaid on the original X-ray.
+
+Heatmap centroid extraction to describe the anatomical region (e.g., “right lower lung zone”).
+
+2.4 Automated Clinical Reporting
+
+Based on the facebook/bart-large-cnn summarization model.
+
+Produces structured clinical reports containing:
+
+Impression
+
+Paraphrased findings
+
+Recommendations
+
+Includes contextual information derived from Grad-CAM regions.
+
+2.5 Web Application
+
+A FastAPI application is provided to:
+
+Upload chest X-rays
+
+Obtain predictions and confidence scores
+
+View Grad-CAM explanations
+
+Read the AI-generated clinical report
+
+Additional rule enforced at inference:
+
+If the model’s confidence for Normal is below 60%, the sample is classified as Pneumonia.
+
+3. Dataset
+
+This project uses the Chest X-Ray Pneumonia dataset (Kaggle), containing:
+
+Training images: Normal and Pneumonia
+
+Test images: Normal and Pneumonia
+
+The dataset is organized into train/ and test/ directories.
+
+4. Workflow
+4.1 Training (Inside the Notebook)
+
+The notebook performs:
+
+Dataset loading
+
+Data augmentation
+
+Weighted sampling for class balancing
+
+Model initialization
+
+Freezing of the ResNet50 backbone
+
+Training loop with:
+
+Loss computation
+
+Accuracy tracking
+
+AUC computation
+
+The best model (based on validation AUC) is saved as:
+
+pneumonia_model.pth
+
+4.2 Evaluation (Inside the Same Notebook)
+
+Post-training, the notebook computes:
+
+Confusion matrix
+
+ROC curve (saved as roc_curve.png)
+
+AUC score
+
+Accuracy
+
+This satisfies the model evaluation requirement.
+
+5. Model Architecture
+
+The classifier head attached to ResNet50 is:
+
+Linear(2048 → 512)
+ReLU
+Dropout(0.3)
+Linear(512 → 2)
+
+
+Predicted classes:
+
+Index 0: Normal
+
+Index 1: Pneumonia
